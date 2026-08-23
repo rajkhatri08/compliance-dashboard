@@ -58,6 +58,8 @@ export default function Home() {
             {result.tier}
           </span>
 
+          <p className="mt-2 text-sm text-gray-600">{result.reason}</p>
+
           {result.warnings.length > 0 && (
             <ul className="mt-3 text-sm text-red-700">
               {result.warnings.map((w, i) => <li key={i}>⚠ {w}</li>)}

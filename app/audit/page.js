@@ -45,6 +45,7 @@ export default function Audit() {
             </div>
 
             <p className="mt-2">{e.question}</p>
+            <p className="text-sm text-gray-600">{e.reason}</p>
 
             {e.warnings.length > 0 && (
               <ul className="mt-1 text-xs text-red-700">
