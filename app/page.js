@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -21,6 +22,12 @@ export default function Home() {
 
   return (
     <main className="p-8 max-w-3xl">
+      <nav className="mb-6 flex gap-4 text-sm">
+        <Link href="/" className="underline">Query</Link>
+        <Link href="/documents" className="underline">Documents</Link>
+        <Link href="/audit" className="underline">Audit</Link>
+      </nav>
+
       <h1 className="text-2xl font-bold">Source-Governed RAG</h1>
       <p className="mt-2 text-gray-600">Compliance document intelligence</p>
 
@@ -42,24 +49,24 @@ export default function Home() {
       {loading && <p className="mt-4">Thinking...</p>}
 
       {result && (
-  <div className="mt-6">
-    <span className={
-      result.tier === "GOLD" ? "px-3 py-1 rounded text-sm font-bold bg-yellow-100 text-yellow-800" :
-      result.tier === "SILVER" ? "px-3 py-1 rounded text-sm font-bold bg-gray-200 text-gray-800" :
-      "px-3 py-1 rounded text-sm font-bold bg-orange-100 text-orange-800"
-    }>
-      {result.tier}
-    </span>
+        <div className="mt-6">
+          <span className={
+            result.tier === "GOLD" ? "px-3 py-1 rounded text-sm font-bold bg-yellow-100 text-yellow-800" :
+            result.tier === "SILVER" ? "px-3 py-1 rounded text-sm font-bold bg-gray-200 text-gray-800" :
+            "px-3 py-1 rounded text-sm font-bold bg-orange-100 text-orange-800"
+          }>
+            {result.tier}
+          </span>
 
-    {result.warnings.length > 0 && (
-      <ul className="mt-3 text-sm text-red-700">
-        {result.warnings.map((w, i) => <li key={i}>⚠ {w}</li>)}
-      </ul>
-    )}
+          {result.warnings.length > 0 && (
+            <ul className="mt-3 text-sm text-red-700">
+              {result.warnings.map((w, i) => <li key={i}>⚠ {w}</li>)}
+            </ul>
+          )}
 
-    <p className="mt-4 whitespace-pre-wrap">{result.answer}</p>
-  </div>
-)}
+          <p className="mt-4 whitespace-pre-wrap">{result.answer}</p>
+        </div>
+      )}
     </main>
   );
 }
