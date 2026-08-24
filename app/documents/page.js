@@ -8,7 +8,7 @@ export default function Documents() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/documents")
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/documents")
       .then((res) => res.json())
       .then((data) => {
         setDocs(data.documents);
