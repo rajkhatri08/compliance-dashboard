@@ -16,6 +16,16 @@ export default function Documents() {
       });
   }, []);
 
+  async function toggleApproval(filename, currentlyApproved) {
+    const action = currentlyApproved ? "unapprove" : "approve";
+    await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents/" + filename + "/" + action, {
+      method: "POST",
+    });
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents");
+    const data = await res.json();
+    setDocs(data.documents);
+  }
+
   return (
     <main className="p-8 max-w-4xl">
       <nav className="mb-6 flex gap-4 text-sm">
@@ -37,6 +47,7 @@ export default function Documents() {
               <th>Version</th>
               <th>Review date</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -50,6 +61,14 @@ export default function Documents() {
                   {!d.approved && <span className="text-orange-700">UNAPPROVED</span>}
                   {d.expired && <span className="text-red-700">EXPIRED</span>}
                   {d.approved && !d.expired && <span className="text-green-700">CURRENT</span>}
+                </td>
+                <td>
+                  <button
+                    className="text-xs underline"
+                    onClick={() => toggleApproval(d.filename, d.approved)}
+                  >
+                    {d.approved ? "Revoke" : "Approve"}
+                  </button>
                 </td>
               </tr>
             ))}
