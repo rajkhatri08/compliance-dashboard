@@ -6,6 +6,11 @@ import Link from "next/link";
 export default function Documents() {
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState(null);
+  const [owner, setOwner] = useState("");
+  const [version, setVersion] = useState("");
+  const [reviewDate, setReviewDate] = useState("");
+  const [uploadError, setUploadError] = useState("");
 
   useEffect(() => {
     fetch(process.env.NEXT_PUBLIC_API_URL + "/documents")
@@ -24,6 +29,36 @@ export default function Documents() {
     const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents");
     const data = await res.json();
     setDocs(data.documents);
+  }
+
+  async function handleUpload() {
+    setUploadError("");
+
+    const form = new FormData();
+    form.append("file", file);
+    form.append("owner", owner);
+    form.append("version", version);
+    form.append("review_date", reviewDate);
+
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/upload", {
+      method: "POST",
+      body: form,
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      setUploadError(err.detail);
+      return;
+    }
+
+    const listRes = await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents");
+    const data = await listRes.json();
+    setDocs(data.documents);
+
+    setFile(null);
+    setOwner("");
+    setVersion("");
+    setReviewDate("");
   }
 
   return (
@@ -75,6 +110,58 @@ export default function Documents() {
           </tbody>
         </table>
       )}
+
+      <div className="mt-10 border-t pt-6">
+        <h2 className="font-bold">Upload a document</h2>
+        <p className="mt-1 text-sm text-gray-600">
+          Uploaded documents are unapproved until reviewed.
+        </p>
+
+        <div className="mt-4 flex flex-col gap-3 max-w-md">
+          <label className="border-2 border-dashed rounded p-6 text-center text-sm text-gray-600 cursor-pointer hover:border-gray-500 hover:bg-gray-50">
+            {file ? (
+              <span className="font-medium text-black">{file.name}</span>
+            ) : (
+              <span>Click to choose a file &middot; .txt or .pdf</span>
+            )}
+            <input
+              type="file"
+              accept=".txt,.pdf"
+              className="hidden"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+          </label>
+
+          <input
+            className="border rounded px-3 py-2 text-sm"
+            placeholder="Owner"
+            value={owner}
+            onChange={(e) => setOwner(e.target.value)}
+          />
+          <input
+            className="border rounded px-3 py-2 text-sm"
+            placeholder="Version"
+            value={version}
+            onChange={(e) => setVersion(e.target.value)}
+          />
+          <input
+            className="border rounded px-3 py-2 text-sm"
+            placeholder="Review date (YYYY-MM-DD)"
+            value={reviewDate}
+            onChange={(e) => setReviewDate(e.target.value)}
+          />
+
+          <button
+            className="bg-black text-white px-4 py-2 rounded text-sm disabled:bg-gray-400"
+            onClick={handleUpload}
+            disabled={!file || !owner || !version || !reviewDate}
+          >
+            Upload
+          </button>
+
+          {uploadError && <p className="text-sm text-red-700">{uploadError}</p>}
+        </div>
+      </div>
     </main>
   );
 }
