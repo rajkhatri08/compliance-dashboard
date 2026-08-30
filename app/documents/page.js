@@ -21,14 +21,25 @@ export default function Documents() {
       });
   }, []);
 
+  async function refresh() {
+    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents");
+    const data = await res.json();
+    setDocs(data.documents);
+  }
+
   async function toggleApproval(filename, currentlyApproved) {
     const action = currentlyApproved ? "unapprove" : "approve";
     await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents/" + filename + "/" + action, {
       method: "POST",
     });
-    const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents");
-    const data = await res.json();
-    setDocs(data.documents);
+    await refresh();
+  }
+
+  async function retire(filename) {
+    await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents/" + filename + "/retire", {
+      method: "POST",
+    });
+    await refresh();
   }
 
   async function handleUpload() {
@@ -51,9 +62,7 @@ export default function Documents() {
       return;
     }
 
-    const listRes = await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents");
-    const data = await listRes.json();
-    setDocs(data.documents);
+    await refresh();
 
     setFile(null);
     setOwner("");
@@ -87,23 +96,34 @@ export default function Documents() {
           </thead>
           <tbody>
             {docs.map((d) => (
-              <tr key={d.filename} className="border-b">
+              <tr key={d.filename} className={d.retired ? "border-b text-gray-400" : "border-b"}>
                 <td className="py-2">{d.filename}</td>
                 <td>{d.owner}</td>
                 <td>{d.version}</td>
                 <td>{d.review_date}</td>
                 <td>
-                  {!d.approved && <span className="text-orange-700">UNAPPROVED</span>}
-                  {d.expired && <span className="text-red-700">EXPIRED</span>}
-                  {d.approved && !d.expired && <span className="text-green-700">CURRENT</span>}
+                  {d.retired && <span className="text-gray-500">RETIRED</span>}
+                  {!d.retired && !d.approved && <span className="text-orange-700">UNAPPROVED</span>}
+                  {!d.retired && d.expired && <span className="text-red-700">EXPIRED</span>}
+                  {!d.retired && d.approved && !d.expired && <span className="text-green-700">CURRENT</span>}
                 </td>
                 <td>
-                  <button
-                    className="text-xs underline"
-                    onClick={() => toggleApproval(d.filename, d.approved)}
-                  >
-                    {d.approved ? "Revoke" : "Approve"}
-                  </button>
+                  {!d.retired && (
+                    <>
+                      <button
+                        className="text-xs underline"
+                        onClick={() => toggleApproval(d.filename, d.approved)}
+                      >
+                        {d.approved ? "Revoke" : "Approve"}
+                      </button>
+                      <button
+                        className="text-xs underline ml-3 text-gray-500"
+                        onClick={() => retire(d.filename)}
+                      >
+                        Retire
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}
