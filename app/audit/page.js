@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import WakeNotice from "../WakeNotice";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 export default function Audit() {
@@ -35,6 +36,8 @@ export default function Audit() {
         <Link href="/documents" className="underline">Documents</Link>
         <Link href="/audit" className="underline">Audit</Link>
       </nav>
+
+      <WakeNotice />
 
       <h1 className="text-2xl font-bold">Audit Log</h1>
       <p className="mt-1 text-gray-600 text-sm">{entries.length} queries recorded</p>

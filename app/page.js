@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import WakeNotice from "./WakeNotice";
 
 export default function Home() {
   const [question, setQuestion] = useState("");
@@ -27,6 +28,8 @@ export default function Home() {
         <Link href="/documents" className="underline">Documents</Link>
         <Link href="/audit" className="underline">Audit</Link>
       </nav>
+
+      <WakeNotice />
 
       <h1 className="text-2xl font-bold">Source-Governed RAG</h1>
       <p className="mt-2 text-gray-600">Compliance document intelligence</p>

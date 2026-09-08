@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import WakeNotice from "../WakeNotice";
 
 export default function Documents() {
   const [docs, setDocs] = useState([]);
@@ -77,6 +78,8 @@ export default function Documents() {
         <Link href="/documents" className="underline">Documents</Link>
         <Link href="/audit" className="underline">Audit</Link>
       </nav>
+
+      <WakeNotice />
 
       <h1 className="text-2xl font-bold">Document Inventory</h1>
 
