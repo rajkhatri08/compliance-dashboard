@@ -37,6 +37,15 @@ export default function Documents() {
   }
 
   async function retire(filename) {
+    const confirmed = window.confirm(
+      "Retire " + filename + "?\n\n" +
+      "It will stop being used to answer questions after the next backend restart, " +
+      "and it can't be un-retired from this page."
+    );
+    if (!confirmed) {
+      return;
+    }
+
     await fetch(process.env.NEXT_PUBLIC_API_URL + "/documents/" + filename + "/retire", {
       method: "POST",
     });
