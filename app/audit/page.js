@@ -71,7 +71,9 @@ export default function Audit() {
                 {e.tier}
               </span>
               <span className="text-xs text-gray-500">{e.timestamp}</span>
-              <span className="text-xs text-gray-500">distance {e.top_distance.toFixed(3)}</span>
+              <span className="text-xs text-gray-500">
+                distance {typeof e.top_distance === "number" ? e.top_distance.toFixed(3) : "—"}
+              </span>
             </div>
 
             <p className="mt-2">{e.question}</p>
@@ -81,6 +83,20 @@ export default function Audit() {
               <ul className="mt-1 text-xs text-red-700">
                 {e.warnings.map((w, i) => <li key={i}>⚠ {w}</li>)}
               </ul>
+            )}
+
+            {e.answer && (
+              <details className="mt-2 text-sm">
+                <summary className="cursor-pointer text-gray-600">Answer and sources</summary>
+                <p className="mt-1 whitespace-pre-wrap">{e.answer}</p>
+                {e.chunks && e.chunks.length > 0 && (
+                  <ul className="mt-2 text-xs text-gray-500 font-mono">
+                    {e.chunks.map((c) => (
+                      <li key={c.chunk_id}>{c.chunk_id} · distance {c.distance.toFixed(3)}</li>
+                    ))}
+                  </ul>
+                )}
+              </details>
             )}
           </div>
         ))}
