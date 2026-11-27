@@ -16,7 +16,7 @@ const DATA_NOTICE =
   "and the passages relevant to a question are sent to Google's Gemini API.";
 const UPLOADED =
   "Uploaded and searchable. It's unapproved, so answers drawn from it are BRONZE until a reviewer approves it.";
-const CHECK_THE_LIST = "Reload this page in a minute: if the document is listed, it was saved; if not, try again.";
+const CHECK_THE_LIST = "Reload this page in a few minutes: if the document is listed, it was saved; if not, try again.";
 
 // What's wrong with the file, in the API's own words, or "" if it can be sent.
 function fileProblem(file) {
