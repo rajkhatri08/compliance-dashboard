@@ -1,0 +1,25 @@
+# Lints and builds the dashboard on each push and pull request, as Vercel builds it.
+name: ci
+
+on: [push, pull_request]
+
+permissions:
+  contents: read # check out the code; nothing else
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Public, not a secret: Next.js builds it into the pages, as Vercel does with its own setting
+      NEXT_PUBLIC_API_URL: https://source-governed-rag.onrender.com
+      NEXT_TELEMETRY_DISABLED: "1" # Next.js sends no usage data from CI
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24 # what Vercel builds with
+          cache: npm
+      - run: npm ci # exactly the versions in package-lock.json
+      - run: npm run lint
+      - run: npm run build
