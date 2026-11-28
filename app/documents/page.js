@@ -81,8 +81,8 @@ export default function Documents() {
   async function retire(filename) {
     const confirmed = window.confirm(
       "Retire " + filename + "?\n\n" +
-      "It will stop being used to answer questions after the next backend restart, " +
-      "and it can't be un-retired from this page."
+      "It stops being used to answer questions immediately. " +
+      "It can be reinstated, but only unapproved: it would need a fresh approval."
     );
     if (!confirmed) {
       return;
